@@ -88,8 +88,8 @@ services:
       - openclaw-workspace:/root/openclaw-workspace
 
       # Secure: Socket mount removed in favor of proxy
-      # - /var/run/docker.sock:/var/run/docker.sock
-
+      - /var/run/docker.sock:/var/run/docker.sock
+      #### Decomment following Gemini !!!!
     depends_on:
       - docker-proxy
 
