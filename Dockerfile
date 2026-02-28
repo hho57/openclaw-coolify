@@ -119,6 +119,15 @@ RUN ln -sf /data/.claude/bin/claude /usr/local/bin/claude || true && \
     ln -sf /data/.kimi/bin/kimi /usr/local/bin/kimi || true && \
     chmod +x /app/scripts/*.sh
 
+# On s'assure que les binaires npm/bun sont bien liés
+RUN ln -sf /usr/local/lib/node_modules/openclaw/bin/openclaw /usr/local/bin/openclaw || \
+    ln -sf $(which openclaw) /usr/local/bin/openclaw || true
+
+# On rend les scripts exécutables
+RUN chmod +x /app/scripts/*.sh
+
 ENV PATH="/root/.local/bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:/bin:/data/.bun/bin:/data/.bun/install/global/bin:/data/.claude/bin:/data/.kimi/bin"
+ENV PATH="/root/.local/bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:/bin:/data/.bun/bin:/data/.bun/install/global/bin:/data/.claude/bin:/data/.kimi/bin:/usr/local/bin:/usr/local/lib/node_modules/.bin:/root/.local/bin:/data/.bun/bin:${PATH}"
+
 EXPOSE 18789
 CMD ["bash", "/app/scripts/bootstrap.sh"]
