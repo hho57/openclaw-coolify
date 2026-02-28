@@ -91,8 +91,15 @@ RUN ln -sf $(npm config get prefix)/bin/openclaw /usr/local/bin/openclaw || \
     find / -name openclaw -type f -executable -exec ln -sf {} /usr/local/bin/openclaw \; || true
     
 # Install uv explicitly
-RUN curl -L https://github.com/azlux/uv/releases/latest/download/uv-linux-x64 -o /usr/local/bin/uv && \
-    chmod +x /usr/local/bin/uv
+#RUN curl -L https://github.com/azlux/uv/releases/latest/download/uv-linux-x64 -o /usr/local/bin/uv && \
+#    chmod +x /usr/local/bin/uv
+
+# Installation propre de uv (via l'installateur officiel uniquement)
+RUN curl -fsSL https://astral.sh/uv/install.sh | bash
+# On force le lien pour qu'il soit prioritaire et sain
+RUN ln -sf /root/.local/bin/uv /usr/local/bin/uv && \
+    ln -sf /root/.local/bin/uvx /usr/local/bin/uvx
+
 
 # Claude + Kimi
 #RUN curl -fsSL https://claude.ai/install.sh | bash && \
@@ -135,4 +142,5 @@ ENV PATH="/root/.local/bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:/bin:/data/
 ENV PATH="/root/.local/bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:/bin:/data/.bun/bin:/data/.bun/install/global/bin:/data/.claude/bin:/data/.kimi/bin:/usr/local/bin:/usr/local/lib/node_modules/.bin:/root/.local/bin:/data/.bun/bin:${PATH}"
 
 EXPOSE 18789
+RUN ln -sf /usr/local/bin/openclaw /usr/bin/openclaw || true
 CMD ["bash", "/app/scripts/bootstrap.sh"]
