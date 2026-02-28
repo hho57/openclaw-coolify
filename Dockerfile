@@ -90,9 +90,18 @@ RUN curl -L https://github.com/azlux/uv/releases/latest/download/uv-linux-x64 -o
     chmod +x /usr/local/bin/uv
 
 # Claude + Kimi
-RUN curl -fsSL https://claude.ai/install.sh | bash && \
-    curl -L https://code.kimi.com/install.sh | bash && \
-    command -v uv
+#RUN curl -fsSL https://claude.ai/install.sh | bash && \
+#    curl -L https://code.kimi.com/install.sh | bash && \
+#    command -v uv
+
+# Installation propre de uv et des scripts
+RUN curl -fsSL https://astral.sh/uv/install.sh | bash || true && \
+    curl -fsSL https://claude.ai/install.sh | bash || true && \
+    curl -L https://code.kimi.com/install.sh | bash || true
+
+# On force le rafraîchissement du PATH pour le build et on vérifie la présence de uv
+RUN export PATH="/root/.local/bin:${PATH}" && \
+    if [ -f "/root/.local/bin/uv" ]; then echo "uv OK"; else echo "uv manquant" && exit 1; fi
 
 # Make sure uv and other local bins are available
 ENV PATH="/root/.local/bin:${PATH}"
