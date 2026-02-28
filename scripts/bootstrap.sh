@@ -221,7 +221,23 @@ echo "🔧 Current ulimit is: $(ulimit -n)"
 #echo "🚀 Lancement de OpenClaw depuis : $OPENCLAW_PATH"
 #exec "$OPENCLAW_PATH" "$@"
 # On cherche le binaire de façon exhaustive pour éviter le "not found"
-REAL_OPENCLAW=$(which openclaw || echo "/usr/local/bin/openclaw")
-echo "🚀 Démarrage final : $REAL_OPENCLAW"
-#exec "$REAL_OPENCLAW" "$@"
-exec "$REAL_OPENCLAW" gateway run
+
+# Recherche dynamique du binaire OpenClaw
+echo "🔍 Recherche du binaire openclaw..."
+REAL_PATH=$(find /usr/local/lib/node_modules -name openclaw -type f -executable | head -n 1)
+
+if [ -z "$REAL_PATH" ]; then
+    REAL_PATH=$(find /data -name openclaw -type f -executable | head -n 1)
+fi
+
+if [ -z "$REAL_PATH" ]; then
+    REAL_PATH=$(which openclaw)
+fi
+
+if [ -z "$REAL_PATH" ]; then
+    echo "❌ Erreur critique : Impossible de localiser le binaire openclaw."
+    exit 1
+fi
+
+echo "🚀 Démarrage final depuis : $REAL_PATH"
+exec "$REAL_PATH" gateway run
