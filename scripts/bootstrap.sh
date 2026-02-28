@@ -211,7 +211,7 @@ echo "      openclaw onboard"
 echo ""
 echo "=================================================================="
 echo "🔧 Current ulimit is: $(ulimit -n)"
-exec openclaw gateway run
+#exec openclaw gateway run
 # On cherche où est openclaw et on le lance via son chemin absolu
 #OPENCLAW_PATH=$(which openclaw || find /usr/local -name openclaw -type f | head -n 1 || find /data -name openclaw -type f | head -n 1)
 #if [ -z "$OPENCLAW_PATH" ]; then
@@ -220,3 +220,8 @@ exec openclaw gateway run
 #fi
 #echo "🚀 Lancement de OpenClaw depuis : $OPENCLAW_PATH"
 #exec "$OPENCLAW_PATH" "$@"
+# On cherche le binaire de façon exhaustive pour éviter le "not found"
+REAL_OPENCLAW=$(which openclaw || echo "/usr/local/bin/openclaw")
+echo "🚀 Démarrage final : $REAL_OPENCLAW"
+#exec "$REAL_OPENCLAW" "$@"
+exec "$REAL_OPENCLAW" gateway run
