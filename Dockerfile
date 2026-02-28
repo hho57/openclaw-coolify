@@ -85,6 +85,12 @@ RUN --mount=type=cache,target=/data/.npm \
     npm install -g openclaw; \
     fi 
 
+# On force le lien symbolique vers un endroit standard
+RUN ln -sf $(npm config get prefix)/bin/openclaw /usr/local/bin/openclaw || \
+    ln -sf /data/.bun/bin/openclaw /usr/local/bin/openclaw || \
+    find / -name openclaw -type f -executable -exec ln -sf {} /usr/local/bin/openclaw \; || true
+
+    
 # Install uv explicitly
 RUN curl -L https://github.com/azlux/uv/releases/latest/download/uv-linux-x64 -o /usr/local/bin/uv && \
     chmod +x /usr/local/bin/uv
